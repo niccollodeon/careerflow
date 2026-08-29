@@ -3,11 +3,13 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { useApplications } from '@/lib/hooks/useApplications';
 import { useUpdateApplicationStatus } from '@/lib/hooks/useUpdateApplicationStatus';
+import { useRequireAuth } from '@/lib/hooks/useRequireAuth';
 import { KanbanColumn } from '@/components/KanbanColumn';
 
 const COLUMNS = ['SAVED', 'APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED'] as const;
 
 export default function DashboardPage() {
+  const { isChecking } = useRequireAuth();
   const { data: applications, isLoading, error } = useApplications();
   const updateStatus = useUpdateApplicationStatus();
 
@@ -16,6 +18,8 @@ export default function DashboardPage() {
     if (!over) return;
     updateStatus.mutate({ id: active.id as string, status: over.id as string });
   }
+
+  if (isChecking) return null;
 
   return (
     <main className="min-h-screen bg-slate-50 px-8 py-8">
