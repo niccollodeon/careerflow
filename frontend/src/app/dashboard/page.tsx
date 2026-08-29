@@ -8,6 +8,7 @@ import { useRequireAuth } from '@/lib/hooks/useRequireAuth';
 import { KanbanColumn } from '@/components/KanbanColumn';
 import { AddApplicationModal } from '@/components/AddApplicationModal';
 import { DashboardHeader } from '@/components/DashboardHeader';
+import { StatsBar } from '@/components/StatsBar';
 
 const COLUMNS = ['SAVED', 'APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED'] as const;
 
@@ -28,6 +29,9 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-8 py-8">
       <DashboardHeader />
+
+      {applications && <StatsBar applications={applications} />}
+
       <div className="flex justify-end mb-4">
         <button
           onClick={() => setShowModal(true)}
