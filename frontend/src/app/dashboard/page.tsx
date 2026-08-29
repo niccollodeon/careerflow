@@ -9,6 +9,7 @@ import { KanbanColumn } from '@/components/KanbanColumn';
 import { AddApplicationModal } from '@/components/AddApplicationModal';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { StatsBar } from '@/components/StatsBar';
+import { DashboardSkeleton } from '@/components/DashboardSkeleton';
 
 const COLUMNS = ['SAVED', 'APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED'] as const;
 
@@ -41,7 +42,7 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {isLoading && <p className="text-slate-500">Loading...</p>}
+      {isLoading && <DashboardSkeleton />}
       {error && <p className="text-red-600">Failed to load applications.</p>}
 
       {applications && (

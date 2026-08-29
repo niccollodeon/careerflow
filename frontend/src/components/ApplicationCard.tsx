@@ -21,7 +21,7 @@ export function ApplicationCard({ app }: { app: Application }) {
       {...listeners}
       {...attributes}
       style={style}
-      className={`bg-white rounded-lg border border-slate-200 shadow-sm p-3 mb-2 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow ${
+      className={`group bg-white rounded-lg border border-slate-200 shadow-sm p-3 mb-2 cursor-grab active:cursor-grabbing hover:shadow-md hover:border-slate-300 transition-all ${
         isDragging ? 'opacity-50' : ''
       }`}
     >
@@ -31,12 +31,28 @@ export function ApplicationCard({ app }: { app: Application }) {
         >
           {getCompanyInitials(app.job.company)}
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-slate-900 truncate">{app.job.title}</p>
           <p className="text-xs text-slate-500 truncate">{app.job.company}</p>
           {app.job.location && (
             <p className="text-xs text-slate-400 mt-0.5 truncate">{app.job.location}</p>
           )}
+
+          <div className="max-h-0 group-hover:max-h-20 overflow-hidden transition-all duration-200">
+            <div className="pt-2 mt-2 border-t border-slate-100 space-y-1">
+              {app.appliedAt && (
+                <p className="text-xs text-slate-400">
+                  Applied {new Date(app.appliedAt).toLocaleDateString()}
+                </p>
+              )}
+              {app.notes && (
+                <p className="text-xs text-slate-500 line-clamp-2">{app.notes}</p>
+              )}
+              {!app.appliedAt && !app.notes && (
+                <p className="text-xs text-slate-300 italic">No notes yet</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import { Application } from '@/lib/hooks/useApplications';
 import { ApplicationCard } from './ApplicationCard';
+import path from 'path/win32';
 
 const STATUS_LABELS: Record<string, string> = {
   SAVED: 'Saved',
@@ -38,7 +39,13 @@ export function KanbanColumn({
       </div>
 
       {applications.length === 0 ? (
-        <p className="text-xs text-slate-400 text-center py-6">No applications</p>
+        <div className="flex flex-col items-center justify-center py-10 text-slate-300">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <rect x="3" y="7" width="18" height="13" rx="2" />
+            <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+          </svg>
+          <p className="text-xs text-slate-400 text-center py-6">No applications</p>
+        </div>
       ) : (
         applications.map((app) => <ApplicationCard key={app.id} app={app} />)
       )}
