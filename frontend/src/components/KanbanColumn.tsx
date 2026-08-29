@@ -36,9 +36,12 @@ export function KanbanColumn({
           {applications.length}
         </span>
       </div>
-      {applications.map((app) => (
-        <ApplicationCard key={app.id} app={app} />
-      ))}
+
+      {applications.length === 0 ? (
+        <p className="text-xs text-slate-400 text-center py-6">No applications</p>
+      ) : (
+        applications.map((app) => <ApplicationCard key={app.id} app={app} />)
+      )}
     </div>
   );
 }
