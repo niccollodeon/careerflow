@@ -9,10 +9,7 @@ export function ApplicationCard({ app }: { app: Application }) {
   });
 
   const style = transform
-    ? {
-        transform: `translate(${transform.x}px, ${transform.y}px)`,
-        zIndex: 10,
-      }
+    ? { transform: `translate(${transform.x}px, ${transform.y}px)`, zIndex: 10 }
     : undefined;
 
   return (
@@ -20,18 +17,13 @@ export function ApplicationCard({ app }: { app: Application }) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      style={{
-        background: 'white',
-        padding: '0.75rem',
-        borderRadius: '6px',
-        marginBottom: '0.5rem',
-        cursor: 'grab',
-        opacity: isDragging ? 0.5 : 1,
-        ...style,
-      }}
+      style={style}
+      className={`bg-white rounded-md border border-slate-200 shadow-sm p-3 mb-2 cursor-grab active:cursor-grabbing ${
+        isDragging ? 'opacity-50' : ''
+      }`}
     >
-      <strong>{app.job.title}</strong>
-      <p style={{ fontSize: '0.85rem', color: '#555' }}>{app.job.company}</p>
+      <p className="text-sm font-medium text-slate-900">{app.job.title}</p>
+      <p className="text-xs text-slate-500 mt-0.5">{app.job.company}</p>
     </div>
   );
 }
