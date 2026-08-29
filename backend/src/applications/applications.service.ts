@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateApplicationDto } from './dto/create-application.dto.js';
 import { UpdateApplicationDto } from './dto/update-application.dto.js';
+import { QuickAddDto } from './dto/quick-add.dto.js';
 
 @Injectable()
 export class ApplicationsService {
@@ -54,5 +55,29 @@ export class ApplicationsService {
     await this.findOne(userId, id);
 
     return this.prisma.client.application.delete({ where: { id } });
+  }
+  async quickAdd(userId: string, dto: QuickAddDto) {
+    return this.prisma.client.$transaction(async (tx) => {
+      const job = await tx.job.create({
+        data: {
+          title: dto.title,
+          company: dto.company,
+          description: dto.description,
+          location: dto.location,
+          sourceUrl: dto.sourceUrl,
+        },
+      });
+
+      const application = await tx.application.create({
+        data: {
+          userId,
+          jobId: job.id,
+          status: 'SAVED',
+        },
+        include: { job: true },
+      });
+
+      return application;
+    });
   }
 }

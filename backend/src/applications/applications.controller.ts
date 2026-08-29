@@ -4,6 +4,7 @@ import { CreateApplicationDto } from './dto/create-application.dto.js';
 import { UpdateApplicationDto } from './dto/update-application.dto.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
+import { QuickAddDto } from './dto/quick-add.dto.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('applications')
@@ -33,5 +34,9 @@ export class ApplicationsController {
   @Delete(':id')
   remove(@CurrentUser() user: any, @Param('id') id: string) {
     return this.applicationsService.remove(user.userId, id);
+  }
+  @Post('quick-add')
+  quickAdd(@CurrentUser() user: any, @Body() dto: QuickAddDto) {
+    return this.applicationsService.quickAdd(user.userId, dto);
   }
 }
