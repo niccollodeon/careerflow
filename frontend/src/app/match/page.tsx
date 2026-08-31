@@ -21,6 +21,7 @@ export default function MatchPage() {
     if (!file) return;
 
     setError('');
+    matchScore.reset();
     try {
       const result = await uploadResume.mutateAsync(file);
       setResumeId(result.id);
@@ -40,6 +41,11 @@ export default function MatchPage() {
     }
   }
 
+  function handleTryAnother() {
+    setJobDescription('');
+    matchScore.reset();
+  }
+
   if (isChecking) return null;
 
   const result = matchScore.data;
@@ -54,16 +60,12 @@ export default function MatchPage() {
               See how well your resume matches a job description.
             </p>
           </div>
-          <Link
-            href="/dashboard"
-            className="text-sm text-slate-600 hover:text-slate-900"
-          >
+          <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900">
             ← Dashboard
           </Link>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-6">
-          {/* Step 1: Resume upload */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               1. Upload your resume (PDF)
@@ -83,11 +85,20 @@ export default function MatchPage() {
             )}
           </div>
 
-          {/* Step 2: Job description */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              2. Paste the job description
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-slate-700">
+                2. Paste the job description
+              </label>
+              {result && (
+                <button
+                  onClick={handleTryAnother}
+                  className="text-xs text-slate-500 hover:text-slate-900"
+                >
+                  Try another job description
+                </button>
+              )}
+            </div>
             <textarea
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
@@ -109,7 +120,25 @@ export default function MatchPage() {
           </button>
         </div>
 
-        {result && (
+        {matchScore.isPending && (
+          <div className="bg-white rounded-xl border border-slate-200 p-6 mt-6 animate-pulse">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-20 h-20 rounded-full bg-slate-200 shrink-0" />
+              <div className="space-y-2">
+                <div className="h-3 w-24 bg-slate-200 rounded" />
+                <div className="h-3 w-40 bg-slate-100 rounded" />
+              </div>
+            </div>
+            <div className="h-3 w-32 bg-slate-200 rounded mb-3" />
+            <div className="flex gap-2">
+              <div className="h-6 w-16 bg-slate-100 rounded-full" />
+              <div className="h-6 w-20 bg-slate-100 rounded-full" />
+              <div className="h-6 w-14 bg-slate-100 rounded-full" />
+            </div>
+          </div>
+        )}
+
+        {result && !matchScore.isPending && (
           <div className="bg-white rounded-xl border border-slate-200 p-6 mt-6">
             <div className="flex items-center gap-4 mb-6">
               <div
@@ -154,7 +183,7 @@ export default function MatchPage() {
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
                   Missing / Weak
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {result.missingSkills.map((skill) => (
                     <span
                       key={skill}
@@ -164,6 +193,9 @@ export default function MatchPage() {
                     </span>
                   ))}
                 </div>
+                <p className="text-xs text-slate-400 italic">
+                  If you have experience with these, consider adding them explicitly to your resume — they may be filtered on by keyword before a human ever reads it.
+                </p>
               </div>
             )}
           </div>
