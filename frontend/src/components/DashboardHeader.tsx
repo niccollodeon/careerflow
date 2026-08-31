@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/lib/hooks/useCurrentUser';
 
@@ -18,6 +19,13 @@ export function DashboardHeader() {
         <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
         {user && <p className="text-sm text-slate-500">{user.email}</p>}
       </div>
+      <div className="flex items-center gap-3">
+        <Link
+          href="/match"
+          className="rounded-md border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2 hover:bg-slate-50"
+        >
+          Resume Match
+        </Link>
       <button
         onClick={handleLogout}
         className="rounded-md border border-slate-300 text-slate-700 text-sm font-medium px-4 py-2 hover:bg-slate-50"
@@ -25,5 +33,6 @@ export function DashboardHeader() {
         Log Out
       </button>
     </div>
+  </div>
   );
 }
