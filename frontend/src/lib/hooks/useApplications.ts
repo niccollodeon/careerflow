@@ -6,6 +6,7 @@ export interface Application {
   status: 'SAVED' | 'APPLIED' | 'INTERVIEW' | 'OFFER' | 'REJECTED';
   notes: string | null;
   appliedAt: string | null;
+  matchScore: number | null;
   createdAt: string;
   job: {
     id: string;

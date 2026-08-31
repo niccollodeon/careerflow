@@ -4,6 +4,12 @@ import { useDraggable } from '@dnd-kit/core';
 import { Application } from '@/lib/hooks/useApplications';
 import { getCompanyInitials, getCompanyColor } from '@/lib/avatar';
 
+function scoreColor(score: number) {
+  if (score >= 70) return 'bg-emerald-100 text-emerald-700';
+  if (score >= 40) return 'bg-amber-100 text-amber-700';
+  return 'bg-rose-100 text-rose-700';
+}
+
 export function ApplicationCard({ app }: { app: Application }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: app.id,
@@ -32,7 +38,18 @@ export function ApplicationCard({ app }: { app: Application }) {
           {getCompanyInitials(app.job.company)}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-slate-900 truncate">{app.job.title}</p>
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-sm font-medium text-slate-900 truncate">{app.job.title}</p>
+            {app.matchScore !== null && (
+              <span
+                className={`shrink-0 text-[10px] font-semibold rounded-full px-1.5 py-0.5 ${scoreColor(
+                  app.matchScore,
+                )}`}
+              >
+                {app.matchScore}%
+              </span>
+            )}
+          </div>
           <p className="text-xs text-slate-500 truncate">{app.job.company}</p>
           {app.job.location && (
             <p className="text-xs text-slate-400 mt-0.5 truncate">{app.job.location}</p>
