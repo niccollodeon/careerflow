@@ -22,6 +22,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   applications Application[]
+  resumes Resume[]
 }
 enum ApplicationStatus {
   SAVED
@@ -59,4 +60,13 @@ model Application {
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@unique([userId, jobId])
+}
+model Resume {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileName     String
+  filePath     String
+  extractedText String  @db.Text
+  createdAt    DateTime @default(now())
 }
