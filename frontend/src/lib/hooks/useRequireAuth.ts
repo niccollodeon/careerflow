@@ -15,7 +15,8 @@ export function useRequireAuth() {
       return;
     }
 
-    setIsChecking((current) => (current ? false : current));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- bootstrapping auth state from localStorage, which is only available client-side after mount; there's no server-renderable alternative here
+    setIsChecking(false);
   }, [router]);
 
   return { isChecking };
