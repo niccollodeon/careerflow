@@ -3,7 +3,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import { Application } from '@/lib/hooks/useApplications';
 import { ApplicationCard } from './ApplicationCard';
-import path from 'path/win32';
 
 const STATUS_LABELS: Record<string, string> = {
   SAVED: 'Saved',

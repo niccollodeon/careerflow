@@ -20,6 +20,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 
   if (res.status === 401) {
     localStorage.removeItem('token');
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- apiFetch is outside React's component tree, router hooks aren't available here
     window.location.href = '/login';
     throw new Error('Session expired');
   }

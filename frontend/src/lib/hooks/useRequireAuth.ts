@@ -15,7 +15,7 @@ export function useRequireAuth() {
       return;
     }
 
-    setIsChecking(false);
+    setIsChecking((current) => (current ? false : current));
   }, [router]);
 
   return { isChecking };
