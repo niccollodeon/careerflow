@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateApplicationDto } from './dto/create-application.dto.js';
 import { UpdateApplicationDto } from './dto/update-application.dto.js';
@@ -6,7 +8,10 @@ import { QuickAddDto } from './dto/quick-add.dto.js';
 
 @Injectable()
 export class ApplicationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @InjectQueue('match-scoring') private readonly matchScoringQueue: Queue,
+  ) {}
 
   create(userId: string, dto: CreateApplicationDto) {
     return this.prisma.client.application.create({
@@ -56,8 +61,9 @@ export class ApplicationsService {
 
     return this.prisma.client.application.delete({ where: { id } });
   }
+
   async quickAdd(userId: string, dto: QuickAddDto) {
-    return this.prisma.client.$transaction(async (tx) => {
+    const application = await this.prisma.client.$transaction(async (tx) => {
       const job = await tx.job.create({
         data: {
           title: dto.title,
@@ -68,7 +74,7 @@ export class ApplicationsService {
         },
       });
 
-      const application = await tx.application.create({
+      return tx.application.create({
         data: {
           userId,
           jobId: job.id,
@@ -76,8 +82,22 @@ export class ApplicationsService {
         },
         include: { job: true },
       });
-
-      return application;
     });
+
+    const latestResume = await this.prisma.client.resume.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (latestResume) {
+      await this.matchScoringQueue.add('score-application', {
+        userId,
+        applicationId: application.id,
+        resumeId: latestResume.id,
+        jobDescription: application.job.description,
+      });
+    }
+
+    return application;
   }
 }
